@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppResponse <T>{
+public class AppResponse<T> {
     private StatusEnum status;
     private T data;
     private String errorCode;
@@ -23,5 +23,12 @@ public class AppResponse <T>{
                 ", errorCode='" + errorCode + '\'' +
                 ", errorMessage='" + errorMessage + '\'' +
                 '}';
+    }
+
+    public String toJsonString() {
+        return "{\"data\":\"" + data + "\"" +
+                ", \"status\":\"" + status + "\"," +
+                " \"errorCode\":\"" + errorCode + "\"," +
+                " \"errorMessage\":\"" + errorMessage + "\"}";
     }
 }
