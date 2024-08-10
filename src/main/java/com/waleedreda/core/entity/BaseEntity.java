@@ -6,6 +6,4 @@ import jakarta.persistence.MappedSuperclass;
 
 public abstract class BaseEntity extends EntityAuditing {
 
-
-
 }

@@ -11,5 +11,4 @@ import java.util.Date;
 
 public class BaseDto extends EntityAuditing {
 
-
 }
