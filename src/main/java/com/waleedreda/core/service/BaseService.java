@@ -6,6 +6,8 @@ import com.waleedreda.core.entity.BaseEntity;
 import com.waleedreda.core.mapper.BaseMapper;
 import com.waleedreda.core.repo.BaseRepo;
 
+import java.util.Optional;
+
 public abstract class BaseService<E extends BaseEntity, D extends BaseDto> {
 
     public D add(D dtoObject) {
@@ -15,9 +17,11 @@ public abstract class BaseService<E extends BaseEntity, D extends BaseDto> {
         return baseDto;
     }
 
-    public void delete(D dtoObject) {
-        E baseEntity = (E) getMapper().convertToEntity(dtoObject);
-        getRepo().delete(baseEntity);
+    public void delete(Long id) {
+        if (null ==id){
+            throw new RuntimeException("Id can't be null.");
+        }
+        getRepo().deleteById(id);
     }
 
 
