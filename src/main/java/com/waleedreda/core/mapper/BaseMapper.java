@@ -3,40 +3,54 @@ package com.waleedreda.core.mapper;
 
 import com.waleedreda.core.dto.BaseDto;
 import com.waleedreda.core.entity.BaseEntity;
+import lombok.Getter;
+import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Getter
+@Setter
 //@Component
-public abstract class BaseMapper<D extends BaseDto, E extends BaseEntity> {
+public abstract class BaseMapper<E extends BaseEntity, D extends BaseDto> {
 
     @Autowired
     private ModelMapper modelMapper;
 
-
-    public BaseMapper() {
-    }
-
-    public D ConvertToDto(E entity) {
-        if (entity == null) {
+    public E convertToEntity(D dto) {
+        if (null == dto) {
             return null;
-        } else {
-            D dto = (D) this.modelMapper.map(entity, this.getDtoClass());
-            return dto;
         }
+        return this.getModelMapper().map(dto, this.getEntityClass());
     }
 
-    public E ConvertToEntity(D dto) {
-        if (dto == null) {
+    public D convertToDto(E entity) {
+        if (null == entity) {
             return null;
-        } else {
-            E entity = (E) this.modelMapper.map(dto, this.getEntityClass());
-            return entity;
         }
+        return this.getModelMapper().map(entity, this.getDtoClass());
     }
+
+    public List<D> convertListEntityToDto(List<E> entityList) {
+        List<D> dtoList = new ArrayList<>();
+        for (E entity : entityList) {
+            dtoList.add(convertToDto(entity));
+        }
+        return dtoList;
+    }
+
+    public List<E> convertListDtoToEntity(List<D> dtoList) {
+        List<E> entityList = new ArrayList<>();
+        for (D dto : dtoList) {
+            entityList.add(convertToEntity(dto));
+        }
+        return entityList;
+    }
+
 
     public abstract Class<D> getDtoClass();
 
     public abstract Class<E> getEntityClass();
-
 }

@@ -5,14 +5,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-//@EnableJpaAuditing
-public class AppConfiguration {
+public class MapperConfiguration {
 
-    public AppConfiguration() {
-    }
-
-    @Bean
+    @Bean(name = "modeMapper")
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
+
 }
