@@ -16,8 +16,11 @@ import java.util.List;
 //@Component
 public abstract class BaseMapper<E extends BaseEntity, D extends BaseDto> {
 
-    @Autowired
     private ModelMapper modelMapper;
+
+    public BaseMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+    }
 
     public E convertToEntity(D dto) {
         if (null == dto) {
