@@ -22,9 +22,13 @@ public abstract class BaseService<E extends BaseEntity, D extends BaseDto> {
         return AppResponseUtil.buildSuccessResponse(baseDto);
     }
 
-    public AppResponse<D> delete(Long id) {
+    public AppResponse<D> delete(Long id) throws Exception {
         if (null ==id){
             throw new RuntimeException("Id can't be null.");
+        }
+        Optional entity = getRepo().findById(id);
+        if (entity.isEmpty()){
+            throw new Exception();
         }
         getRepo().deleteById(id);
         return AppResponseUtil.buildSuccessResponse();
@@ -51,7 +55,7 @@ public abstract class BaseService<E extends BaseEntity, D extends BaseDto> {
             throw new RuntimeException("Id can't be null.");
         }
         Optional byId = getRepo().findById(id);
-        if (null == byId){
+        if (byId.isEmpty()){
             return AppResponseUtil.buildFailedResponse(ErrorCode.NOT_FOUND,"can't find record with this id " + id);
         }
         E e = (E) byId.get();
