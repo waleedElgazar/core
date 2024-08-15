@@ -23,26 +23,14 @@ public abstract class BaseService<E extends BaseEntity, D extends BaseDto> {
     }
 
     public AppResponse<D> delete(Long id) throws Exception {
-        if (null ==id){
-            throw new RuntimeException("Id can't be null.");
-        }
-        Optional entity = getRepo().findById(id);
-        if (entity.isEmpty()){
-            throw new Exception();
-        }
+        beforeAction(id);
         getRepo().deleteById(id);
         return AppResponseUtil.buildSuccessResponse();
     }
 
-    public AppResponse<D> put(Long id, D dto) {
-        if (null == id) {
-            throw new RuntimeException("Id can't be null.");
-        }
-        Optional byId = getRepo().findById(id);
-        if (null == byId){
-            return AppResponseUtil.buildFailedResponse(ErrorCode.NOT_FOUND,"can't find record with this id " + id);
-        }
-        E oldEntity = (E) byId.get();
+    public AppResponse<D> put(Long id, D dto) throws Exception {
+        Optional entity = beforeAction(id);
+        E oldEntity = (E) entity.get();
         E newEntity = (E) getMapper().convertToEntity(dto);
         doBeforeUpdate(oldEntity, newEntity);
         newEntity = (E) getRepo().save(newEntity);
@@ -50,15 +38,9 @@ public abstract class BaseService<E extends BaseEntity, D extends BaseDto> {
         return AppResponseUtil.buildSuccessResponse(newDto);
     }
 
-    public AppResponse<D> get(Long id){
-        if (null == id){
-            throw new RuntimeException("Id can't be null.");
-        }
-        Optional byId = getRepo().findById(id);
-        if (byId.isEmpty()){
-            return AppResponseUtil.buildFailedResponse(ErrorCode.NOT_FOUND,"can't find record with this id " + id);
-        }
-        E e = (E) byId.get();
+    public AppResponse<D> get(Long id) throws Exception {
+        Optional entity = beforeAction(id);
+        E e = (E) entity.get();
         D d = (D) getMapper().convertToDto(e);
         return AppResponseUtil.buildSuccessResponse(d);
     }
@@ -70,9 +52,22 @@ public abstract class BaseService<E extends BaseEntity, D extends BaseDto> {
     }
 
     protected void doBeforeUpdate(E oldEntity, E newEntity){};
+
     protected Object doCustomOperation(String operationType, Object...objects){
         throw new UnsupportedOperationException();
     };
+
+
+    private Optional beforeAction(Long id) throws Exception {
+        if (null ==id){
+            throw new RuntimeException("Id can't be null.");
+        }
+        Optional entity = getRepo().findById(id);
+        if (entity.isEmpty()){
+            throw new Exception();
+        }
+        return entity;
+    }
     public abstract BaseRepo getRepo();
 
     public abstract BaseMapper getMapper();
